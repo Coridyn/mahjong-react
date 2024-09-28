@@ -1,0 +1,20 @@
+# editorconfig.org
+root = true
+
+[*]
+trim_trailing_whitespace = false
+#indent_style = space
+indent_size = 4
+#end_of_line = lf
+
+[{*.json,*.js,*.ts,*.svg,*.scss}]
+trim_trailing_whitespace = false
+insert_final_newline = true
+charset = utf-8
+indent_style = space
+indent_size = 4
+
+# Matches the exact package.json, or *rc
+[{package.json,bower.json,*.yml,*rc}]
+indent_style = space
+indent_size = 2
