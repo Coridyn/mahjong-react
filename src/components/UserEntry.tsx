@@ -1,3 +1,4 @@
+import '../styles/UserEntry.scss';
 import { Player } from '../types/Player.ts';
 import {GameResult} from '../types/GameResult.ts';
 import {getActivePlayers, validateForDiscard, validateForSelfDraw} from '../lib/ValidityUtil.ts';
@@ -10,105 +11,87 @@ export interface IUserEntryProps {
 
 export const UserEntry = (props: IUserEntryProps) => {
     const {
-        players,
+        players: allPlayers,
         onChange,
         onGameWin,
     } = props;
     
-    // TODO: validate data-entry
+    const players = getActivePlayers(allPlayers);
     
     return (
 <div className="user-entry">
+    <div
+        className="user-entry__main"
+    >
+        <div className="user-entry__player-wrapper">
+            { players.map((player) => {
+                const faanInputId = `faan-input--${player.id}`;
+                return (<div
+                    className="user-entry__player"
+                    key={player.id}
+                >
+                    {/*
+                    <div className="player__score-display">
+                        <div className="user-entry__title">Score:</div>
+                        <div className="user-entry__value">
+                            {player.scoreTotal}
+                        </div>
+                    </div>
+                    */}
+                    
+                    <div className="player__name">
+                        <div className="user-entry__title">Name:</div>
+                        <div className="user-entry__value">{player.name}</div>
+                    </div>
+                    
+                    <div
+                        className="player__faan"
+                    >
+                        <label 
+                            className="user-entry__title"
+                            htmlFor={faanInputId}
+                        >Faan:</label>
+                        <input
+                            id={faanInputId}
+                            className="user-entry__value player__faan-input"
+                            type="text"
+                            inputMode="numeric"
+                            value={player.curScoreInput}
+                            onChange={(event) => {
+                                const newPlayer: Player = {
+                                    ...player,
+                                    curScoreInput: event.target.value,
+                                };
+                                onChange(newPlayer);
+                            }}
+                        />
+                    </div>
+                
+                </div>);
+            })}
+        </div>
+    </div>
+    
     <div className="user-entry__triggers">
         <button
             type="button"
             onClick={() => {
-                const activePlayers = getActivePlayers(players);
-                const gameResult = validateForDiscard(activePlayers);
+                const gameResult = validateForDiscard(players);
                 onGameWin(gameResult);
             }}
         >Discard win</button>
         <button
             type="button"
             onClick={() => {
-                const activePlayers = getActivePlayers(players);
-                const gameResult = validateForSelfDraw(activePlayers);
+                const gameResult = validateForSelfDraw(players);
                 onGameWin(gameResult);
             }}
         >Self-draw win</button>
-    </div>
-    
-    <div className="user-entry__title">
-        <div className="title__active">
-            Active?
-        </div>
-        <div className="title__score-display">
-            Score
-        </div>
-        <div className="title__name">
-            Name
-        </div>
-        <div className="title__score-input">
-            Faan
-        </div>
-    </div>
-    
-    { players.map((player) => {
-        return (<div
-            className="user-entry__player"
-            key={player.id}
-        >
-            <div className="player__active">
-                <input
-                    type="checkbox"
-                    checked={player.isActive}
-                    onChange={(event) => {
-                        const checked = event.target.checked
-                        const newPlayer: Player = {
-                            ...player,
-                            isActive: checked,
-                        };
-                        onChange(newPlayer);
-                    }}
-                />
-            </div>
-            <div className="player__score-display">
-                {player.scoreTotal}
-            </div>
-            
-            <div className="player__name">
-                <input
-                    type="text"
-                    value={player.name}
-                    onChange={(event) => {
-                        const newPlayer: Player = {
-                            ...player,
-                            name: event.target.value,
-                        };
-                        onChange(newPlayer);
-                    }}
-                />
-            </div>
-            
-            <div
-                className="player__score-input"
-            >
-                <input
-                    type="text"
-                    inputMode="numeric"
-                    value={player.curScoreInput}
-                    onChange={(event) => {
-                        const newPlayer: Player = {
-                            ...player,
-                            curScoreInput: event.target.value,
-                        };
-                        onChange(newPlayer);
-                    }}
-                />
-            </div>
         
-        </div>);
-    })}
+        <button
+            type="button"
+        >Undo</button>
+    </div>
 </div>
     );
 };

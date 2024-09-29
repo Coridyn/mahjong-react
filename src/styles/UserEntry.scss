@@ -1,0 +1,131 @@
+.mj-setup {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+.setup__action-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+
+.user-entry {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.user-entry {
+    input[type=text] {
+        width: 100%;
+    }
+}
+
+.user-entry__triggers {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.user-entry__main,
+.user-entry__player-wrapper,
+{
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 1rem;
+    row-gap: 2rem;
+}
+@media screen and (min-width: 600px) {
+    //.user-entry__player-wrapper {
+    //    
+    //}
+}
+@media screen and (max-width: 600px) {
+    .user-entry__player-wrapper {
+        max-width: 100%;
+    }
+    .user-entry__player {
+        max-width: 46%;
+    }
+}
+
+.user-entry__title,
+.user-entry__player,
+{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.user-entry__main {
+    //.title__active,
+    //.title__score-display,
+    //.title__name,
+    //.title__faan,
+    //.player__active,
+    //.player__score-display,
+    //.player__name,
+    //.player__faan,
+    //{
+    //    line-height: 30px;
+    //}
+    
+    .player__name-input {
+        background-color: azure;
+    }
+    
+    .title__name,
+    .title__faan,
+    .player__name-input,
+    .player__faan-input,
+    {
+        line-height: 30px;
+    }
+    .player__name-input,
+    .player__faan-input,
+    {
+        line-height: 30px;
+        padding: 0 3px;
+    }
+    
+    .player__active-input {
+        display: inline-block;
+        margin: 0;
+        width:  20px;
+        height: 20px;
+    }
+}
+
+.user-entry__player {
+    text-align: left;
+}
+.user-entry__title {
+    font-weight: 700;
+}
+
+.setup__player-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    
+    label {
+        display: block;
+    }
+}
+.setup__player {
+    display: flex;
+    align-items: flex-end;
+    text-align: left;
+    gap: 10px;
+}
+.player__name {
+    width: 60%;
+}
+.player__name-input {
+    font-size: 1rem;
+    padding: 3px;
+    width: 100%;
+}
+.player__active {
+    flex-grow: 1;
+}

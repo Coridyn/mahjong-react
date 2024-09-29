@@ -14,7 +14,7 @@ export function validateForDiscard(players: Player[]): GameResult {
         faan: 0,
         players: players,
         winnerId: -1,
-        loserPlayers: [],
+        loserPlayers: new Set<number>(),
     };
     
     players.forEach((player) => {
@@ -42,7 +42,7 @@ export function validateForSelfDraw(players: Player[]) {
         faan: 0,
         players: players,
         winnerId: -1,
-        loserPlayers: [],
+        loserPlayers: new Set<number>(),
     };
     players.forEach((player) => {
         const rawScore = player.curScoreInput;
@@ -60,10 +60,10 @@ export function validateForSelfDraw(players: Player[]) {
     
     // If the self-draw is being shared amongst all other players
     // put their player index into the list.
-    if (gameResult.loserPlayers.length === 0) {
+    if (gameResult.loserPlayers.size === 0) {
         players.forEach((player) => {
             if (player.id !== gameResult.winnerId) {
-                gameResult.loserPlayers.push(player.id);
+                gameResult.loserPlayers.add(player.id);
             }
         });
     }
@@ -85,7 +85,7 @@ function _collectWinnerDetails(player: Player, faanValue: number, gameResult: Ga
 }
 
 function _collectSinglePayerDetails(player: Player, gameResult: GameResult) {
-    gameResult.loserPlayers.push(player.id);
+    gameResult.loserPlayers.add(player.id);
 }
 
 /**
@@ -98,8 +98,8 @@ function assertValidDiscard(gameResult: GameResult) {
     if (gameResult.type !== WIN_DISCARD) {
         errorMessage = `Invalid result type="${gameResult.type}" (expected "${WIN_DISCARD}")`;
         
-    } else if (gameResult.loserPlayers.length > 1) {
-        errorMessage = `Invalid loserIndexList.length; expected exactly 1 but received length=${gameResult.loserPlayers.length} (make sure a negative number or dash has been entered for a single discarding player)`;
+    } else if (gameResult.loserPlayers.size > 1) {
+        errorMessage = `Invalid loserIndexList.length; expected exactly 1 but received length=${gameResult.loserPlayers.size} (make sure a negative number or dash has been entered for a single discarding player)`;
     }
     
     if (errorMessage) {
@@ -117,8 +117,8 @@ function assertValidSelfDraw(gameResult: GameResult) {
     if (gameResult.type !== WIN_SELF_DRAW) {
         errorMessage = `Invalid result type="${gameResult.type}" (expected "${WIN_SELF_DRAW}")`;
         
-    } else if (gameResult.loserPlayers.length !== 1 && gameResult.loserPlayers.length !== 3) {
-        errorMessage = `Invalid loserPlayers.length; expected exactly 1 or 3 players but received length=${gameResult.loserPlayers.length} (make sure all paying players have an empty score, or single paying player has a "-" in their column)`;
+    } else if (gameResult.loserPlayers.size !== 1 && gameResult.loserPlayers.size !== 3) {
+        errorMessage = `Invalid loserPlayers.length; expected exactly 1 or 3 players but received length=${gameResult.loserPlayers.size} (make sure all paying players have an empty score, or single paying player has a "-" in their column)`;
     }
     
     if (errorMessage) {
@@ -146,7 +146,7 @@ function _assertGameWinCommon(gameResult: GameResult) {
     } else if (gameResult.winnerId === -1) {
         errorMessage = `Winning player has not been set (make sure a positive number has been entered for the winner player)`;
         
-    } else if (!gameResult.loserPlayers.length) {
+    } else if (!gameResult.loserPlayers.size) {
         errorMessage = `Paying player has not been set (make sure a negative number or dash has been entered for the discarding player)`;
         
     }
@@ -159,4 +159,20 @@ function _assertGameWinCommon(gameResult: GameResult) {
 export function assertMessage(context: string, msg: string): asserts msg {
     alert(`(${context}) ${msg}`);
     throw new Error(`(${context}) ${msg}`);
+}
+
+/**
+ * 
+ */
+export function validateActivePlayerCount(players: Player[]){
+    const activePlayers = getActivePlayers(players);
+    const isValid = activePlayers.length === 4;
+    return ({
+        isValid: isValid,
+        activePlayersCount: activePlayers,
+        message: [
+            activePlayers.length < 4 ? `Not enough active players: ${activePlayers.length}` : '',
+            activePlayers.length > 4 ? `Too many active players: ${activePlayers.length}` : '',
+        ],
+    });
 }

@@ -1,0 +1,34 @@
+.score-display {
+    overflow-x: auto;
+}
+.table-responsive {
+    overflow-x: auto;
+}
+.table {
+    width: 100%;
+}
+.score-col-1 {
+    background-color: #fff;
+    position: sticky;
+    left: 0;
+}
+.score-display__total-row,
+.score-display__total-row .score-col-1,
+{
+    background-color: aliceblue;
+}
+.score-display__player-total {
+    font-weight: 700;
+}
+.player-score-col {
+    width: 22%;
+}
+
+.win {
+    background-color: green;
+    color: #fff;
+}
+.loss {
+    background-color: palevioletred;
+    color: #fff;
+}

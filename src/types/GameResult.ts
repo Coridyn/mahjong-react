@@ -8,5 +8,5 @@ export type GameResult = {
     faan: number,
     players: Player[],
     winnerId: number,
-    loserPlayers: number[],
+    loserPlayers: Set<number>,
 };

@@ -4,9 +4,10 @@ import {UserEntry} from './components/UserEntry.tsx';
 import {Player} from './types/Player.ts';
 import {getNewPlayer} from './lib/PlayerUtil.ts';
 import {GameResult} from './types/GameResult.ts';
-import {distributePoints} from './lib/MahjongUtil.ts';
+import {distributePoints, updatePlayerInList} from './lib/MahjongUtil.ts';
 import {ScoreDisplay} from './components/ScoreDisplay.tsx';
 import {GameState} from './types/GameState.ts';
+import {Setup} from './components/Setup.tsx';
 
 const PLAYER_COUNT = 4;
 
@@ -46,17 +47,7 @@ function App() {
      * 
      */
     function updatePlayer(playerDelta: Player){
-        const nextPlayers = players.map((player) => {
-            let nextPlayer = player;
-            if (player.id === playerDelta.id){
-                nextPlayer = {
-                    ...player,
-                    ...playerDelta,
-                };
-            }
-            return nextPlayer;
-        });
-        
+        const nextPlayers = updatePlayerInList(players, playerDelta);
         setPlayers(nextPlayers);
     }
     
@@ -77,13 +68,27 @@ function App() {
     
     return (
         <div>
+            <Setup
+                players={players}
+                onCommit={(newPlayers) => {
+                    setPlayers(newPlayers);
+                    
+                    // TODO: close settings
+                }}
+                onCancel={() => {
+                    // TODO: close settings
+                }}
+            />
+            
+            <hr/>
+            
             <UserEntry
                 players={players}
                 onChange={updatePlayer}
                 onGameWin={handleGameWin}
             />
             <ScoreDisplay
-                players={players}
+                gameState={gameState}
             />
         </div>
     )

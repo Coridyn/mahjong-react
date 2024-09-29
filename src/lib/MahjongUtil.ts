@@ -24,7 +24,7 @@ export function distributePoints(gameResult: GameResult) {
         
         case WIN_SELF_DRAW: {
             winPointsIndex = SELF_DRAW_TOTAL_INDEX;
-            if (gameResult.loserPlayers.length === 1) {
+            if (gameResult.loserPlayers.size === 1) {
                 // Single-payer penalty
                 losePointsIndex = SELF_DRAW_TOTAL_INDEX;
             } else {
@@ -54,17 +54,20 @@ export function distributePoints(gameResult: GameResult) {
     /**
      * TODO: keep track of the type of wins, etc.
      */
-    
-    // Score winner
-    const winnerPlayer = players[gameResult.winnerId];
-    const winnerDelta = updatePlayerScore(winnerPlayer, winPoints);
-    playerDeltas.push(winnerDelta);
-    
-    // Score losers
-    gameResult.loserPlayers.forEach((loserIndex) => {
-        const player = players[loserIndex];
-        const playerDelta = updatePlayerScore(player, losePointsPerPlayer);
-        playerDeltas.push(playerDelta);
+    players.forEach((player) => {
+        if (player.id === gameResult.winnerId){
+            // Score winner
+            const winnerDelta = updatePlayerScore(player, winPoints);
+            playerDeltas.push(winnerDelta);
+        } else if (gameResult.loserPlayers.has(player.id)){
+            // Score losers
+            const playerDelta = updatePlayerScore(player, losePointsPerPlayer);
+            playerDeltas.push(playerDelta);
+        } else {
+            // Score zero
+            const playerDelta = updatePlayerScore(player, 0);
+            playerDeltas.push(playerDelta);
+        }
     });
     
     return playerDeltas;
@@ -96,11 +99,39 @@ function getPointsRowForFaan(faanNeedle: number) {
  * 
  */
 function updatePlayerScore(player: Player, points: number){
+    const scoreList = player.scoreList.concat(points);
+    const scoreTotal = sum(scoreList);
     const playerDelta: Player = {
         ...player,
-        scoreTotal: player.scoreTotal + points,
-        scoreList: player.scoreList.concat(points),
+        scoreTotal: scoreTotal,
+        scoreList: scoreList,
         curScoreInput: '',
     };
     return playerDelta;
+}
+
+function sum(scores: number[]){
+    const total = scores.reduce((acc, value) => {
+        const result = acc + value;
+        return result;
+    }, 0);
+    return total;
+}
+
+/**
+ * Return a new list with the associated player replaced.
+ */
+export function updatePlayerInList(players: Player[], playerDelta: Player): Player[] {
+    const nextPlayers = players.map((player) => {
+        let nextPlayer = player;
+        if (player.id === playerDelta.id){
+            nextPlayer = {
+                ...player,
+                ...playerDelta,
+            };
+        }
+        return nextPlayer;
+    });
+    
+    return nextPlayers;
 }
